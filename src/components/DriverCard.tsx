@@ -1,6 +1,7 @@
 import { Heart } from "lucide-react";
 import CountryFlag from "./CountryFlag";
 import type { Driver, Team } from "@/data/f1Data";
+import { getDriverPhoto } from "@/data/driverPhotos";
 
 interface DriverCardProps {
   driver: Driver;
@@ -10,6 +11,8 @@ interface DriverCardProps {
 }
 
 const DriverCard = ({ driver, team, isFavorite, onToggleFavorite }: DriverCardProps) => {
+  const driverPhoto = getDriverPhoto(driver.name);
+
   return (
     <div
       className="relative bg-card rounded-xl border border-border overflow-hidden transition-all duration-300 hover:border-opacity-50 group"
@@ -25,9 +28,26 @@ const DriverCard = ({ driver, team, isFavorite, onToggleFavorite }: DriverCardPr
         {/* Driver Info */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-foreground font-bold text-lg">
-              {driver.name.split(' ').map(n => n[0]).join('')}
-            </div>
+            {/* Driver Photo or Initials */}
+            {driverPhoto ? (
+              <div 
+                className="w-14 h-14 rounded-full overflow-hidden border-2 transition-transform duration-300 group-hover:scale-105"
+                style={{ borderColor: team.color }}
+              >
+                <img 
+                  src={driverPhoto} 
+                  alt={driver.name}
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+            ) : (
+              <div 
+                className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center text-foreground font-bold text-lg border-2"
+                style={{ borderColor: team.color }}
+              >
+                {driver.name.split(' ').map(n => n[0]).join('')}
+              </div>
+            )}
             <div>
               <h4 className="text-foreground font-bold">{driver.name}</h4>
               <div className="flex items-center gap-2 mt-1">
