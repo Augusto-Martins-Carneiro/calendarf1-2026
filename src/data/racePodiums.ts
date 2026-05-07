@@ -10,6 +10,12 @@ export interface RacePodium {
   sprint?: PodiumEntry[];
 }
 
+// Corridas canceladas em 2026
+export const cancelledRaces: number[] = [4, 5]; // Bahrein, Arábia Saudita (Jeddah)
+
+export const isRaceCancelled = (raceId: number): boolean =>
+  cancelledRaces.includes(raceId);
+
 // Resultados oficiais 2026
 export const racePodiums: RacePodium[] = [
   {
@@ -39,6 +45,19 @@ export const racePodiums: RacePodium[] = [
       { position: 1, driver: "Kimi Antonelli", team: "Mercedes" },
       { position: 2, driver: "Oscar Piastri", team: "McLaren Mercedes" },
       { position: 3, driver: "Charles Leclerc", team: "Ferrari" },
+    ],
+  },
+  {
+    raceId: 6, // Miami (Sprint Weekend)
+    sprint: [
+      { position: 1, driver: "Lando Norris", team: "McLaren Mercedes" },
+      { position: 2, driver: "Oscar Piastri", team: "McLaren Mercedes" },
+      { position: 3, driver: "Charles Leclerc", team: "Ferrari" },
+    ],
+    race: [
+      { position: 1, driver: "Kimi Antonelli", team: "Mercedes" },
+      { position: 2, driver: "Lando Norris", team: "McLaren Mercedes" },
+      { position: 3, driver: "Oscar Piastri", team: "McLaren Mercedes" },
     ],
   },
 ];
