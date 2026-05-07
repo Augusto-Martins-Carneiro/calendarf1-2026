@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { MapPin, Clock, RotateCcw, ChevronDown, ChevronUp, Zap, Trophy } from "lucide-react";
+import { MapPin, Clock, RotateCcw, ChevronDown, ChevronUp, Zap, Trophy, Ban } from "lucide-react";
 import CountryFlag from "./CountryFlag";
 import type { Race } from "@/data/f1Data";
 import { getScheduleForRace } from "@/data/raceSchedules";
-import { getPodiumForRace, type PodiumEntry } from "@/data/racePodiums";
+import { getPodiumForRace, isRaceCancelled, type PodiumEntry } from "@/data/racePodiums";
 
 const PodiumBlock = ({ title, entries, accent }: { title: string; entries: PodiumEntry[]; accent: string }) => {
   const medal = ["bg-yellow-500/20 text-yellow-400 border-yellow-500/40", "bg-gray-400/20 text-gray-300 border-gray-400/40", "bg-amber-700/20 text-amber-500 border-amber-700/40"];
