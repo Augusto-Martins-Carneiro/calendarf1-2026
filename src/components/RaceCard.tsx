@@ -42,7 +42,7 @@ const RaceCard = ({ race, index }: RaceCardProps) => {
 
   return (
     <div
-      className="group relative bg-gradient-card rounded-xl border border-border overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-glow racing-stripe animate-slide-in"
+      className={`group relative bg-gradient-card rounded-xl border border-border overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-glow racing-stripe animate-slide-in ${isCancelled ? "opacity-70 grayscale-[0.4]" : ""}`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Race Number Badge */}
