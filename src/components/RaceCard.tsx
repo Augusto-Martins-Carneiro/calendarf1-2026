@@ -36,6 +36,8 @@ interface RaceCardProps {
 const RaceCard = ({ race, index }: RaceCardProps) => {
   const [showSchedule, setShowSchedule] = useState(false);
   const schedule = getScheduleForRace(race.id);
+  const podium = getPodiumForRace(race.id);
+  const isFinished = !!podium?.race;
 
   return (
     <div
