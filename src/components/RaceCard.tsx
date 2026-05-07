@@ -1,8 +1,32 @@
 import { useState } from "react";
-import { MapPin, Clock, RotateCcw, ChevronDown, ChevronUp, Zap } from "lucide-react";
+import { MapPin, Clock, RotateCcw, ChevronDown, ChevronUp, Zap, Trophy } from "lucide-react";
 import CountryFlag from "./CountryFlag";
 import type { Race } from "@/data/f1Data";
 import { getScheduleForRace } from "@/data/raceSchedules";
+import { getPodiumForRace, type PodiumEntry } from "@/data/racePodiums";
+
+const PodiumBlock = ({ title, entries, accent }: { title: string; entries: PodiumEntry[]; accent: string }) => {
+  const medal = ["bg-yellow-500/20 text-yellow-400 border-yellow-500/40", "bg-gray-400/20 text-gray-300 border-gray-400/40", "bg-amber-700/20 text-amber-500 border-amber-700/40"];
+  return (
+    <div className="mt-3">
+      <div className="flex items-center gap-2 mb-2">
+        <Trophy className={`w-4 h-4 ${accent}`} />
+        <span className={`text-xs font-bold uppercase tracking-wider ${accent}`}>{title}</span>
+      </div>
+      <div className="space-y-1.5">
+        {entries.sort((a, b) => a.position - b.position).map((e) => (
+          <div key={e.position} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border ${medal[e.position - 1]}`}>
+            <span className="font-black text-sm w-5">P{e.position}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-foreground text-sm font-semibold truncate">{e.driver}</p>
+              <p className="text-muted-foreground text-xs truncate">{e.team}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 interface RaceCardProps {
   race: Race;
@@ -12,6 +36,8 @@ interface RaceCardProps {
 const RaceCard = ({ race, index }: RaceCardProps) => {
   const [showSchedule, setShowSchedule] = useState(false);
   const schedule = getScheduleForRace(race.id);
+  const podium = getPodiumForRace(race.id);
+  const isFinished = !!podium?.race;
 
   return (
     <div
@@ -140,12 +166,27 @@ const RaceCard = ({ race, index }: RaceCardProps) => {
           </div>
         )}
 
+        {/* Podium */}
+        {podium?.sprint && (
+          <PodiumBlock title="Pódio Sprint" entries={podium.sprint} accent="text-accent" />
+        )}
+        {podium?.race && (
+          <PodiumBlock title="Pódio da Corrida" entries={podium.race} accent="text-primary" />
+        )}
+
         {/* Status Badge */}
         <div className="mt-4">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-            <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
-            Próxima
-          </span>
+          {isFinished ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 text-xs font-semibold rounded-full">
+              <Trophy className="w-3 h-3" />
+              Finalizada
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+              <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+              Próxima
+            </span>
+          )}
         </div>
       </div>
     </div>
