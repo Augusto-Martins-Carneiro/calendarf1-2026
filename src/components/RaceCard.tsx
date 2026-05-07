@@ -177,7 +177,12 @@ const RaceCard = ({ race, index }: RaceCardProps) => {
 
         {/* Status Badge */}
         <div className="mt-4">
-          {isFinished ? (
+          {isCancelled ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-destructive/15 text-destructive text-xs font-semibold rounded-full">
+              <Ban className="w-3 h-3" />
+              Cancelada
+            </span>
+          ) : isFinished ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 text-xs font-semibold rounded-full">
               <Trophy className="w-3 h-3" />
               Finalizada
