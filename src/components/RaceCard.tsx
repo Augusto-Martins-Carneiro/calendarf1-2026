@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { MapPin, Clock, RotateCcw, ChevronDown, ChevronUp, Zap, Trophy } from "lucide-react";
+import { MapPin, Clock, RotateCcw, ChevronDown, ChevronUp, Zap, Trophy, Ban } from "lucide-react";
 import CountryFlag from "./CountryFlag";
 import type { Race } from "@/data/f1Data";
 import { getScheduleForRace } from "@/data/raceSchedules";
-import { getPodiumForRace, type PodiumEntry } from "@/data/racePodiums";
+import { getPodiumForRace, isRaceCancelled, type PodiumEntry } from "@/data/racePodiums";
 
 const PodiumBlock = ({ title, entries, accent }: { title: string; entries: PodiumEntry[]; accent: string }) => {
   const medal = ["bg-yellow-500/20 text-yellow-400 border-yellow-500/40", "bg-gray-400/20 text-gray-300 border-gray-400/40", "bg-amber-700/20 text-amber-500 border-amber-700/40"];
@@ -38,10 +38,11 @@ const RaceCard = ({ race, index }: RaceCardProps) => {
   const schedule = getScheduleForRace(race.id);
   const podium = getPodiumForRace(race.id);
   const isFinished = !!podium?.race;
+  const isCancelled = isRaceCancelled(race.id);
 
   return (
     <div
-      className="group relative bg-gradient-card rounded-xl border border-border overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-glow racing-stripe animate-slide-in"
+      className={`group relative bg-gradient-card rounded-xl border border-border overflow-hidden transition-all duration-500 hover:border-primary/50 hover:shadow-glow racing-stripe animate-slide-in ${isCancelled ? "opacity-70 grayscale-[0.4]" : ""}`}
       style={{ animationDelay: `${index * 50}ms` }}
     >
       {/* Race Number Badge */}
@@ -176,7 +177,12 @@ const RaceCard = ({ race, index }: RaceCardProps) => {
 
         {/* Status Badge */}
         <div className="mt-4">
-          {isFinished ? (
+          {isCancelled ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-destructive/15 text-destructive text-xs font-semibold rounded-full">
+              <Ban className="w-3 h-3" />
+              Cancelada
+            </span>
+          ) : isFinished ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 text-xs font-semibold rounded-full">
               <Trophy className="w-3 h-3" />
               Finalizada
