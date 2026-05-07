@@ -166,12 +166,27 @@ const RaceCard = ({ race, index }: RaceCardProps) => {
           </div>
         )}
 
+        {/* Podium */}
+        {podium?.sprint && (
+          <PodiumBlock title="Pódio Sprint" entries={podium.sprint} accent="text-accent" />
+        )}
+        {podium?.race && (
+          <PodiumBlock title="Pódio da Corrida" entries={podium.race} accent="text-primary" />
+        )}
+
         {/* Status Badge */}
         <div className="mt-4">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-            <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
-            Próxima
-          </span>
+          {isFinished ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 text-xs font-semibold rounded-full">
+              <Trophy className="w-3 h-3" />
+              Finalizada
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
+              <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse"></span>
+              Próxima
+            </span>
+          )}
         </div>
       </div>
     </div>
