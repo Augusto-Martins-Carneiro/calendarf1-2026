@@ -38,6 +38,7 @@ const RaceCard = ({ race, index }: RaceCardProps) => {
   const schedule = getScheduleForRace(race.id);
   const podium = getPodiumForRace(race.id);
   const isFinished = !!podium?.race;
+  const isCancelled = isRaceCancelled(race.id);
 
   return (
     <div
