@@ -4,11 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { teams } from "@/data/f1Data";
 import { getDriverPhoto } from "@/data/driverPhotos";
 
-interface RaceResultRow {
-  race_id: number;
-  session_type: "race" | "sprint";
+interface DriverStanding {
   position: number;
   driver_name: string;
+  team_name: string;
+  points: number;
+}
+
+interface ConstructorStanding {
+  position: number;
   team_name: string;
   points: number;
 }
@@ -18,45 +22,60 @@ const teamColor = (teamName: string) =>
 
 const StandingsView = () => {
   const [tab, setTab] = useState<"drivers" | "constructors">("drivers");
-  const [rows, setRows] = useState<RaceResultRow[]>([]);
+  const [drivers, setDrivers] = useState<DriverStanding[]>([]);
+  const [constructors, setConstructors] = useState<ConstructorStanding[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("race_results")
-        .select("race_id, session_type, position, driver_name, team_name, points");
-      if (error) setError(error.message);
-      else setRows((data ?? []) as RaceResultRow[]);
+      const [d, c] = await Promise.all([
+        supabase
+          .from("driver_standings")
+          .select("position, driver_name, team_name, points")
+          .order("position", { ascending: true }),
+        supabase
+          .from("constructor_standings")
+          .select("position, team_name, points")
+          .order("position", { ascending: true }),
+      ]);
+      if (d.error) setError(d.error.message);
+      else setDrivers((d.data ?? []) as DriverStanding[]);
+      if (c.error) setError(c.error.message);
+      else setConstructors((c.data ?? []) as ConstructorStanding[]);
       setLoading(false);
     })();
   }, []);
 
-  const driverStandings = useMemo(() => {
-    const map = new Map<string, { driver: string; team: string; points: number; wins: number; podiums: number }>();
-    rows.forEach((r) => {
-      const cur = map.get(r.driver_name) ?? { driver: r.driver_name, team: r.team_name, points: 0, wins: 0, podiums: 0 };
-      cur.points += Number(r.points);
-      if (r.session_type === "race" && r.position === 1) cur.wins += 1;
-      if (r.session_type === "race" && r.position <= 3) cur.podiums += 1;
-      cur.team = r.team_name;
-      map.set(r.driver_name, cur);
-    });
-    return Array.from(map.values()).sort((a, b) => b.points - a.points);
-  }, [rows]);
+  // Ensure all 22 drivers / 11 teams render even if missing in DB (extra safety)
+  const fullDrivers = useMemo<DriverStanding[]>(() => {
+    const byName = new Map(drivers.map((d) => [d.driver_name, d]));
+    const all: DriverStanding[] = [];
+    teams.forEach((t) =>
+      t.drivers.forEach((dr) => {
+        const existing = byName.get(dr.name);
+        if (existing) all.push(existing);
+        else
+          all.push({
+            position: 99,
+            driver_name: dr.name,
+            team_name: t.name,
+            points: 0,
+          });
+      })
+    );
+    return all.sort((a, b) => b.points - a.points || a.position - b.position);
+  }, [drivers]);
 
-  const constructorStandings = useMemo(() => {
-    const map = new Map<string, { team: string; points: number; wins: number }>();
-    rows.forEach((r) => {
-      const cur = map.get(r.team_name) ?? { team: r.team_name, points: 0, wins: 0 };
-      cur.points += Number(r.points);
-      if (r.session_type === "race" && r.position === 1) cur.wins += 1;
-      map.set(r.team_name, cur);
+  const fullConstructors = useMemo<ConstructorStanding[]>(() => {
+    const byName = new Map(constructors.map((c) => [c.team_name, c]));
+    const all: ConstructorStanding[] = teams.map((t) => {
+      const existing = byName.get(t.name);
+      return existing ?? { position: 99, team_name: t.name, points: 0 };
     });
-    return Array.from(map.values()).sort((a, b) => b.points - a.points);
-  }, [rows]);
+    return all.sort((a, b) => b.points - a.points || a.position - b.position);
+  }, [constructors]);
 
   return (
     <div className="py-8 md:py-12">
@@ -70,11 +89,10 @@ const StandingsView = () => {
             Classificação
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Pontuação calculada a partir dos resultados oficiais cadastrados na base de dados.
+            Pontuação oficial após o Grande Prêmio de Miami.
           </p>
         </div>
 
-        {/* Tab switcher */}
         <div className="flex justify-center gap-2 mb-8">
           <button
             onClick={() => setTab("drivers")}
@@ -106,85 +124,81 @@ const StandingsView = () => {
           </div>
         )}
 
-        {error && (
-          <p className="text-center text-destructive">Erro ao carregar: {error}</p>
-        )}
+        {error && <p className="text-center text-destructive">Erro ao carregar: {error}</p>}
 
         {!loading && !error && tab === "drivers" && (
           <div className="max-w-3xl mx-auto bg-gradient-card rounded-xl border border-border overflow-hidden">
-            <div className="grid grid-cols-[48px_1fr_80px_80px_80px] md:grid-cols-[60px_1fr_100px_100px_100px] gap-2 px-4 py-3 bg-secondary/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <div className="grid grid-cols-[48px_1fr_90px] md:grid-cols-[60px_1fr_120px] gap-2 px-4 py-3 bg-secondary/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
               <div>Pos</div>
               <div>Piloto</div>
-              <div className="text-center">Vit.</div>
-              <div className="text-center">Pód.</div>
               <div className="text-right">Pontos</div>
             </div>
-            {driverStandings.map((d, i) => {
-              const photo = getDriverPhoto(d.driver);
-              const color = teamColor(d.team);
+            {fullDrivers.map((d, i) => {
+              const photo = getDriverPhoto(d.driver_name);
+              const color = teamColor(d.team_name);
               return (
                 <div
-                  key={d.driver}
-                  className="grid grid-cols-[48px_1fr_80px_80px_80px] md:grid-cols-[60px_1fr_100px_100px_100px] gap-2 px-4 py-3 items-center border-t border-border hover:bg-secondary/30 transition-colors"
+                  key={d.driver_name}
+                  className="grid grid-cols-[48px_1fr_90px] md:grid-cols-[60px_1fr_120px] gap-2 px-4 py-3 items-center border-t border-border hover:bg-secondary/30 transition-colors"
                 >
                   <div className="font-black text-lg text-foreground">{i + 1}</div>
                   <div className="flex items-center gap-3 min-w-0">
                     {photo ? (
                       <img
                         src={photo}
-                        alt={d.driver}
-                        className="w-10 h-10 rounded-full object-cover border-2 shrink-0"
+                        alt={d.driver_name}
+                        className="w-10 h-10 rounded-full object-cover border-2 shrink-0 bg-secondary"
                         style={{ borderColor: color }}
                         loading="lazy"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-secondary shrink-0" />
+                      <div
+                        className="w-10 h-10 rounded-full bg-secondary shrink-0 border-2"
+                        style={{ borderColor: color }}
+                      />
                     )}
                     <div className="min-w-0">
-                      <p className="font-semibold text-foreground truncate">{d.driver}</p>
-                      <p className="text-xs truncate" style={{ color }}>{d.team}</p>
+                      <p className="font-semibold text-foreground truncate">{d.driver_name}</p>
+                      <p className="text-xs truncate" style={{ color }}>
+                        {d.team_name}
+                      </p>
                     </div>
                   </div>
-                  <div className="text-center text-foreground font-semibold">{d.wins}</div>
-                  <div className="text-center text-foreground font-semibold">{d.podiums}</div>
                   <div className="text-right font-black text-primary">{d.points}</div>
                 </div>
               );
             })}
-            {driverStandings.length === 0 && (
-              <p className="text-center py-10 text-muted-foreground">Sem resultados ainda.</p>
-            )}
           </div>
         )}
 
         {!loading && !error && tab === "constructors" && (
           <div className="max-w-3xl mx-auto bg-gradient-card rounded-xl border border-border overflow-hidden">
-            <div className="grid grid-cols-[48px_1fr_80px_100px] md:grid-cols-[60px_1fr_100px_120px] gap-2 px-4 py-3 bg-secondary/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <div className="grid grid-cols-[48px_1fr_100px] md:grid-cols-[60px_1fr_120px] gap-2 px-4 py-3 bg-secondary/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
               <div>Pos</div>
               <div>Equipe</div>
-              <div className="text-center">Vit.</div>
               <div className="text-right">Pontos</div>
             </div>
-            {constructorStandings.map((c, i) => {
-              const color = teamColor(c.team);
+            {fullConstructors.map((c, i) => {
+              const color = teamColor(c.team_name);
               return (
                 <div
-                  key={c.team}
-                  className="grid grid-cols-[48px_1fr_80px_100px] md:grid-cols-[60px_1fr_100px_120px] gap-2 px-4 py-3 items-center border-t border-border hover:bg-secondary/30 transition-colors"
+                  key={c.team_name}
+                  className="grid grid-cols-[48px_1fr_100px] md:grid-cols-[60px_1fr_120px] gap-2 px-4 py-3 items-center border-t border-border hover:bg-secondary/30 transition-colors"
                 >
                   <div className="font-black text-lg text-foreground">{i + 1}</div>
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-1.5 h-10 rounded-full shrink-0" style={{ backgroundColor: color }} />
-                    <p className="font-semibold text-foreground truncate" style={{ color }}>{c.team}</p>
+                    <span
+                      className="w-1.5 h-10 rounded-full shrink-0"
+                      style={{ backgroundColor: color }}
+                    />
+                    <p className="font-bold truncate" style={{ color }}>
+                      {c.team_name}
+                    </p>
                   </div>
-                  <div className="text-center text-foreground font-semibold">{c.wins}</div>
                   <div className="text-right font-black text-primary">{c.points}</div>
                 </div>
               );
             })}
-            {constructorStandings.length === 0 && (
-              <p className="text-center py-10 text-muted-foreground">Sem resultados ainda.</p>
-            )}
           </div>
         )}
       </div>
