@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      race_results: {
+        Row: {
+          created_at: string
+          driver_name: string
+          id: string
+          points: number
+          position: number
+          race_id: number
+          session_type: string
+          team_name: string
+        }
+        Insert: {
+          created_at?: string
+          driver_name: string
+          id?: string
+          points?: number
+          position: number
+          race_id: number
+          session_type: string
+          team_name: string
+        }
+        Update: {
+          created_at?: string
+          driver_name?: string
+          id?: string
+          points?: number
+          position?: number
+          race_id?: number
+          session_type?: string
+          team_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
