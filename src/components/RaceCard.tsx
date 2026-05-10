@@ -15,15 +15,23 @@ const PodiumBlock = ({ title, entries, accent }: { title: string; entries: Podiu
         <span className={`text-xs font-bold uppercase tracking-wider ${accent}`}>{title}</span>
       </div>
       <div className="space-y-1.5">
-        {entries.sort((a, b) => a.position - b.position).map((e) => (
-          <div key={e.position} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border ${medal[e.position - 1]}`}>
-            <span className="font-black text-sm w-5">P{e.position}</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-foreground text-sm font-semibold truncate">{e.driver}</p>
-              <p className="text-muted-foreground text-xs truncate">{e.team}</p>
+        {entries.sort((a, b) => a.position - b.position).map((e) => {
+          const photo = getDriverPhoto(e.driver);
+          return (
+            <div key={e.position} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border ${medal[e.position - 1]}`}>
+              <span className="font-black text-sm w-5">P{e.position}</span>
+              {photo ? (
+                <img src={photo} alt={e.driver} className="w-8 h-8 rounded-full object-cover border border-border bg-secondary shrink-0" loading="lazy" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-secondary shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-foreground text-sm font-semibold truncate">{e.driver}</p>
+                <p className="text-muted-foreground text-xs truncate">{e.team}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
