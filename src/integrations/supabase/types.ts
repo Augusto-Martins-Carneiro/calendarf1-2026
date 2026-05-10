@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      constructor_standings: {
+        Row: {
+          id: string
+          points: number
+          position: number
+          team_name: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          points?: number
+          position: number
+          team_name: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          points?: number
+          position?: number
+          team_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      driver_standings: {
+        Row: {
+          driver_name: string
+          id: string
+          points: number
+          position: number
+          team_name: string
+          updated_at: string
+        }
+        Insert: {
+          driver_name: string
+          id?: string
+          points?: number
+          position: number
+          team_name: string
+          updated_at?: string
+        }
+        Update: {
+          driver_name?: string
+          id?: string
+          points?: number
+          position?: number
+          team_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       race_results: {
         Row: {
           created_at: string
