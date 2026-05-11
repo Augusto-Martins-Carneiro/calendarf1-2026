@@ -219,10 +219,16 @@ const StandingsView = () => {
                 >
                   <div className="font-black text-lg text-foreground">{i + 1}</div>
                   <div className="flex items-center gap-3 min-w-0">
-                    <span
-                      className="w-1.5 h-10 rounded-full shrink-0"
-                      style={{ backgroundColor: color }}
-                    />
+                    <div
+                      className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center font-black text-sm border-2"
+                      style={{
+                        backgroundColor: `${color}20`,
+                        borderColor: color,
+                        color,
+                      }}
+                    >
+                      {teamAbbr(c.team_name)}
+                    </div>
                     <p className="font-bold truncate" style={{ color }}>
                       {c.team_name}
                     </p>
