@@ -147,8 +147,8 @@ const StandingsView = () => {
                       <img
                         src={photo}
                         alt={d.driver_name}
-                        className="w-10 h-10 rounded-full object-cover border-2 shrink-0 bg-secondary"
-                        style={{ borderColor: color }}
+                        className="w-11 h-11 rounded-full object-cover border-2 shrink-0 bg-secondary"
+                        style={{ borderColor: color, objectPosition: "50% 12%" }}
                         loading="lazy"
                       />
                     ) : (
