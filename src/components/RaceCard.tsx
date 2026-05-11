@@ -21,8 +21,8 @@ const PodiumBlock = ({ title, entries, accent }: { title: string; entries: Podiu
             <div key={e.position} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md border ${medal[e.position - 1]}`}>
               <span className="font-black text-sm w-5">P{e.position}</span>
               {photo ? (
-                <div className="w-12 h-12 rounded-full overflow-hidden border border-border bg-secondary shrink-0 flex items-center justify-center">
-                  <img src={photo} alt={e.driver} className="w-full h-full object-contain" loading="lazy" />
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-border bg-secondary shrink-0">
+                  <img src={photo} alt={e.driver} className="w-full h-full object-cover object-top" loading="lazy" />
                 </div>
               ) : (
                 <div className="w-12 h-12 rounded-full bg-secondary shrink-0" />
