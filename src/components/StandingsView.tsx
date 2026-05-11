@@ -20,6 +20,34 @@ interface ConstructorStanding {
 const teamColor = (teamName: string) =>
   teams.find((t) => t.name === teamName)?.color ?? "#888888";
 
+const teamAbbr = (teamName: string): string => {
+  const map: Record<string, string> = {
+    "McLaren Mercedes": "MCL",
+    "Red Bull Ford": "RBR",
+    "Mercedes": "MER",
+    "Ferrari": "FER",
+    "Aston Martin Honda": "AMR",
+    "Aston Martin": "AMR",
+    "Williams Mercedes": "WIL",
+    "Williams": "WIL",
+    "Audi": "AUD",
+    "Sauber": "SAU",
+    "Racing Bulls Ford": "RB",
+    "Racing Bulls Honda": "RB",
+    "Haas Ferrari": "HAA",
+    "Haas": "HAA",
+    "Alpine Renault": "ALP",
+    "Alpine": "ALP",
+    "Cadillac Ferrari": "CAD",
+    "Cadillac": "CAD",
+  };
+  if (map[teamName]) return map[teamName];
+  return teamName
+    .split(" ")[0]
+    .slice(0, 3)
+    .toUpperCase();
+};
+
 const StandingsView = () => {
   const [tab, setTab] = useState<"drivers" | "constructors">("drivers");
   const [drivers, setDrivers] = useState<DriverStanding[]>([]);
@@ -145,19 +173,19 @@ const StandingsView = () => {
                   <div className="flex items-center gap-3 min-w-0">
                     {photo ? (
                       <div
-                        className="w-11 h-11 rounded-full overflow-hidden border-2 shrink-0 bg-secondary"
+                        className="w-12 h-12 rounded-full overflow-hidden border-2 shrink-0 bg-secondary flex items-center justify-center"
                         style={{ borderColor: color }}
                       >
                         <img
                           src={photo}
                           alt={d.driver_name}
-                          className="w-full h-full object-cover object-top"
+                          className="w-full h-full object-contain"
                           loading="lazy"
                         />
                       </div>
                     ) : (
                       <div
-                        className="w-10 h-10 rounded-full bg-secondary shrink-0 border-2"
+                        className="w-12 h-12 rounded-full bg-secondary shrink-0 border-2"
                         style={{ borderColor: color }}
                       />
                     )}
@@ -191,10 +219,16 @@ const StandingsView = () => {
                 >
                   <div className="font-black text-lg text-foreground">{i + 1}</div>
                   <div className="flex items-center gap-3 min-w-0">
-                    <span
-                      className="w-1.5 h-10 rounded-full shrink-0"
-                      style={{ backgroundColor: color }}
-                    />
+                    <div
+                      className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center font-black text-sm border-2"
+                      style={{
+                        backgroundColor: `${color}20`,
+                        borderColor: color,
+                        color,
+                      }}
+                    >
+                      {teamAbbr(c.team_name)}
+                    </div>
                     <p className="font-bold truncate" style={{ color }}>
                       {c.team_name}
                     </p>
