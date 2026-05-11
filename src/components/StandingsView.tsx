@@ -20,6 +20,34 @@ interface ConstructorStanding {
 const teamColor = (teamName: string) =>
   teams.find((t) => t.name === teamName)?.color ?? "#888888";
 
+const teamAbbr = (teamName: string): string => {
+  const map: Record<string, string> = {
+    "McLaren Mercedes": "MCL",
+    "Red Bull Ford": "RBR",
+    "Mercedes": "MER",
+    "Ferrari": "FER",
+    "Aston Martin Honda": "AMR",
+    "Aston Martin": "AMR",
+    "Williams Mercedes": "WIL",
+    "Williams": "WIL",
+    "Audi": "AUD",
+    "Sauber": "SAU",
+    "Racing Bulls Ford": "RB",
+    "Racing Bulls Honda": "RB",
+    "Haas Ferrari": "HAA",
+    "Haas": "HAA",
+    "Alpine Renault": "ALP",
+    "Alpine": "ALP",
+    "Cadillac Ferrari": "CAD",
+    "Cadillac": "CAD",
+  };
+  if (map[teamName]) return map[teamName];
+  return teamName
+    .split(" ")[0]
+    .slice(0, 3)
+    .toUpperCase();
+};
+
 const StandingsView = () => {
   const [tab, setTab] = useState<"drivers" | "constructors">("drivers");
   const [drivers, setDrivers] = useState<DriverStanding[]>([]);
