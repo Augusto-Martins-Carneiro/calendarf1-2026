@@ -144,13 +144,17 @@ const StandingsView = () => {
                   <div className="font-black text-lg text-foreground">{i + 1}</div>
                   <div className="flex items-center gap-3 min-w-0">
                     {photo ? (
-                      <img
-                        src={photo}
-                        alt={d.driver_name}
-                        className="w-11 h-11 rounded-full object-cover border-2 shrink-0 bg-secondary"
-                        style={{ borderColor: color, objectPosition: "50% 12%" }}
-                        loading="lazy"
-                      />
+                      <div
+                        className="w-11 h-11 rounded-full overflow-hidden border-2 shrink-0 bg-secondary"
+                        style={{ borderColor: color }}
+                      >
+                        <img
+                          src={photo}
+                          alt={d.driver_name}
+                          className="w-full h-full object-cover object-top"
+                          loading="lazy"
+                        />
+                      </div>
                     ) : (
                       <div
                         className="w-10 h-10 rounded-full bg-secondary shrink-0 border-2"
