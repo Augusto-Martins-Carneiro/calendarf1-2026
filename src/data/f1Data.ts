@@ -96,7 +96,7 @@ export const teams: Team[] = [
     ],
   },
   {
-    name: "Racing Bulls Honda",
+    name: "Racing Bulls Ford",
     color: "#6692FF",
     drivers: [
       { name: "Liam Lawson", nationality: "Neozelandês", countryCode: "NZ" },
