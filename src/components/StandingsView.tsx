@@ -228,14 +228,24 @@ const StandingsView = () => {
                   <div className="font-black text-lg text-foreground">{i + 1}</div>
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center font-black text-sm border-2"
+                      className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center overflow-hidden border-2"
                       style={{
                         backgroundColor: `${color}20`,
                         borderColor: color,
-                        color,
                       }}
                     >
-                      {teamAbbr(c.team_name)}
+                      {teamLogo(c.team_name) ? (
+                        <img
+                          src={teamLogo(c.team_name)}
+                          alt={c.team_name}
+                          className="w-9 h-9 object-contain"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="font-black text-sm" style={{ color }}>
+                          {c.team_name.slice(0, 3).toUpperCase()}
+                        </span>
+                      )}
                     </div>
                     <p className="font-bold truncate" style={{ color }}>
                       {c.team_name}
