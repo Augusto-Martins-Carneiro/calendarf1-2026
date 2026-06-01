@@ -60,6 +60,14 @@ export const racePodiums: RacePodium[] = [
       { position: 3, driver: "Oscar Piastri", team: "McLaren Mercedes" },
     ],
   },
+  {
+    raceId: 7, // Canadá
+    race: [
+      { position: 1, driver: "Kimi Antonelli", team: "Mercedes" },
+      { position: 2, driver: "Lewis Hamilton", team: "Ferrari" },
+      { position: 3, driver: "Max Verstappen", team: "Red Bull Ford" },
+    ],
+  },
 ];
 
 export const getPodiumForRace = (raceId: number): RacePodium | undefined =>
