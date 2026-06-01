@@ -3,6 +3,17 @@ import { Trophy, Users, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { teams } from "@/data/f1Data";
 import { getDriverPhoto } from "@/data/driverPhotos";
+import mclarenLogo from "@/assets/teams/mclaren.png";
+import redbullLogo from "@/assets/teams/redbull.png";
+import mercedesLogo from "@/assets/teams/mercedes.png";
+import ferrariLogo from "@/assets/teams/ferrari.png";
+import astonLogo from "@/assets/teams/aston.png";
+import williamsLogo from "@/assets/teams/williams.png";
+import audiLogo from "@/assets/teams/audi.png";
+import racingbullsLogo from "@/assets/teams/racingbulls.png";
+import haasLogo from "@/assets/teams/haas.png";
+import alpineLogo from "@/assets/teams/alpine.png";
+import cadillacLogo from "@/assets/teams/cadillac.png";
 
 interface DriverStanding {
   position: number;
@@ -20,32 +31,29 @@ interface ConstructorStanding {
 const teamColor = (teamName: string) =>
   teams.find((t) => t.name === teamName)?.color ?? "#888888";
 
-const teamAbbr = (teamName: string): string => {
+const teamLogo = (teamName: string): string | undefined => {
   const map: Record<string, string> = {
-    "McLaren Mercedes": "MCL",
-    "Red Bull Ford": "RBR",
-    "Mercedes": "MER",
-    "Ferrari": "FER",
-    "Aston Martin Honda": "AMR",
-    "Aston Martin": "AMR",
-    "Williams Mercedes": "WIL",
-    "Williams": "WIL",
-    "Audi": "AUD",
-    "Sauber": "SAU",
-    "Racing Bulls Ford": "RB",
-    "Racing Bulls Honda": "RB",
-    "Haas Ferrari": "HAA",
-    "Haas": "HAA",
-    "Alpine Renault": "ALP",
-    "Alpine": "ALP",
-    "Cadillac Ferrari": "CAD",
-    "Cadillac": "CAD",
+    "McLaren Mercedes": mclarenLogo,
+    "Red Bull Ford": redbullLogo,
+    "Mercedes": mercedesLogo,
+    "Ferrari": ferrariLogo,
+    "Aston Martin Honda": astonLogo,
+    "Aston Martin": astonLogo,
+    "Williams Mercedes": williamsLogo,
+    "Williams": williamsLogo,
+    "Audi": audiLogo,
+    "Sauber": audiLogo,
+    "Racing Bulls Ford": racingbullsLogo,
+    "Racing Bulls Honda": racingbullsLogo,
+    "Haas Ferrari": haasLogo,
+    "Haas": haasLogo,
+    "Alpine Mercedes": alpineLogo,
+    "Alpine Renault": alpineLogo,
+    "Alpine": alpineLogo,
+    "Cadillac Ferrari": cadillacLogo,
+    "Cadillac": cadillacLogo,
   };
-  if (map[teamName]) return map[teamName];
-  return teamName
-    .split(" ")[0]
-    .slice(0, 3)
-    .toUpperCase();
+  return map[teamName];
 };
 
 const StandingsView = () => {
@@ -220,14 +228,24 @@ const StandingsView = () => {
                   <div className="font-black text-lg text-foreground">{i + 1}</div>
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center font-black text-sm border-2"
+                      className="w-12 h-12 rounded-full shrink-0 flex items-center justify-center overflow-hidden border-2"
                       style={{
                         backgroundColor: `${color}20`,
                         borderColor: color,
-                        color,
                       }}
                     >
-                      {teamAbbr(c.team_name)}
+                      {teamLogo(c.team_name) ? (
+                        <img
+                          src={teamLogo(c.team_name)}
+                          alt={c.team_name}
+                          className="w-9 h-9 object-contain"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <span className="font-black text-sm" style={{ color }}>
+                          {c.team_name.slice(0, 3).toUpperCase()}
+                        </span>
+                      )}
                     </div>
                     <p className="font-bold truncate" style={{ color }}>
                       {c.team_name}
