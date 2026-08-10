@@ -125,7 +125,7 @@ const StandingsView = () => {
             Classificação
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Pontuação oficial após o Grande Prêmio de Miami.
+            Pontuação oficial após o Grande Prêmio da Hungria.
           </p>
         </div>
 
