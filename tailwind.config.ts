@@ -50,12 +50,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        f1: {
-          red: "hsl(var(--f1-red))",
-          "red-glow": "hsl(var(--f1-red-glow))",
-          carbon: "hsl(var(--carbon))",
-          silver: "hsl(var(--silver))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -77,12 +71,10 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       backgroundImage: {
-        'gradient-f1': 'var(--gradient-f1)',
         'gradient-card': 'var(--gradient-card)',
         'gradient-hero': 'var(--gradient-hero)',
       },
       boxShadow: {
-        'glow': 'var(--shadow-glow)',
         'card': 'var(--shadow-card)',
       },
     },

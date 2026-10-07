@@ -1,73 +1,65 @@
-# Welcome to your Lovable project
+# F1 2026
 
-## Project info
+Calendário, resultados e classificação da temporada 2026 da Fórmula 1, em português.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+- **Calendário** com as 23 etapas, horário de cada sessão convertido para o fuso do visitante
+  e contagem regressiva para a próxima sessão.
+- **Página por Grande Prêmio** com o resultado completo: grid de largada, voltas completadas,
+  tempo ou motivo do abandono, melhor volta e pontuação. Sprints aparecem em tabela separada.
+- **Classificação** de pilotos e construtores com vitórias, pódios e pontos.
+- **Pilotos e equipes** com as cores e os escudos oficiais de 2026.
 
-## How can I edit this code?
+## Rodando
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+O app sobe em `http://localhost:8080`.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## De onde vêm os dados
 
-**Use GitHub Codespaces**
+| Dado | Origem |
+| --- | --- |
+| Calendário, circuitos, horários das sessões, grade de pilotos | `src/data/f1Data.ts` (estático) |
+| Resultados de cada etapa e classificação | Supabase (`race_results`, `driver_standings`, `constructor_standings`) |
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+As tabelas do Supabase são somente leitura para o público (RLS com política de `SELECT`).
 
-## What technologies are used for this project?
+### Atualizando depois de uma corrida
 
-This project is built with:
+```bash
+npm run resultados
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+O script busca a temporada na API [Jolpica](https://api.jolpi.ca/ergast/f1/2026) (sucessora da
+Ergast) e regrava `supabase/migrations/20261006120000_season_2026_full_results.sql` com todos os
+resultados e a classificação. Em seguida, cole o conteúdo desse arquivo no **SQL Editor** do painel
+do Supabase e execute. A migração derruba e recria as três tabelas, então pode ser aplicada quantas
+vezes for preciso.
 
-## How can I deploy this project?
+Se o banco ainda não recebeu a migração, o app mostra um aviso explicando isso em vez de uma tabela
+vazia.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## Estrutura
 
-## Can I connect a custom domain to my Lovable project?
+```
+src/
+  components/
+    common/      CountryFlag, TeamBadge, DriverAvatar, QueryState
+    home/        NextRaceHero, Countdown
+    layout/      SiteHeader, SiteFooter
+    race/        RaceCard, ResultsTable, PodiumStrip, SessionSchedule
+    standings/   DriverStandingsTable, ConstructorStandingsTable
+    ui/          shadcn/ui
+  data/          f1Data (calendário e grade), driverPhotos, teamLogos
+  hooks/         useSeason (consultas ao Supabase via React Query)
+  lib/           format (datas, horários e contagem regressiva em pt-BR)
+  pages/         Home, CalendarPage, RacePage, StandingsPage, DriversPage, TeamsPage, TeamPage
+```
 
-Yes, you can!
+## Observações
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Projeto de fã, sem vínculo com a Formula One World Championship Ltd. Os escudos das equipes e as
+fotos dos pilotos pertencem aos seus detentores de direitos.

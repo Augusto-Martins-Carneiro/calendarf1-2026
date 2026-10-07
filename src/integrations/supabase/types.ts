@@ -18,83 +18,140 @@ export type Database = {
         Row: {
           id: string
           points: number
+          podiums: number
           position: number
+          team_id: string
           team_name: string
           updated_at: string
+          wins: number
         }
         Insert: {
           id?: string
           points?: number
+          podiums?: number
           position: number
+          team_id: string
           team_name: string
           updated_at?: string
+          wins?: number
         }
         Update: {
           id?: string
           points?: number
+          podiums?: number
           position?: number
+          team_id?: string
           team_name?: string
           updated_at?: string
+          wins?: number
         }
         Relationships: []
       }
       driver_standings: {
         Row: {
+          driver_code: string | null
+          driver_id: string
           driver_name: string
+          driver_number: number | null
           id: string
           points: number
+          podiums: number
           position: number
+          team_id: string
           team_name: string
           updated_at: string
+          wins: number
         }
         Insert: {
+          driver_code?: string | null
+          driver_id: string
           driver_name: string
+          driver_number?: number | null
           id?: string
           points?: number
+          podiums?: number
           position: number
+          team_id: string
           team_name: string
           updated_at?: string
+          wins?: number
         }
         Update: {
+          driver_code?: string | null
+          driver_id?: string
           driver_name?: string
+          driver_number?: number | null
           id?: string
           points?: number
+          podiums?: number
           position?: number
+          team_id?: string
           team_name?: string
           updated_at?: string
+          wins?: number
         }
         Relationships: []
       }
       race_results: {
         Row: {
-          created_at: string
+          driver_code: string | null
+          driver_id: string
           driver_name: string
+          driver_number: number | null
+          fastest_lap: string | null
+          fastest_lap_rank: number | null
+          grid: number | null
           id: string
+          laps: number | null
           points: number
-          position: number
-          race_id: number
+          position: number | null
+          position_text: string
+          round: number
           session_type: string
+          status: string | null
+          team_id: string
           team_name: string
+          time_text: string | null
         }
         Insert: {
-          created_at?: string
+          driver_code?: string | null
+          driver_id: string
           driver_name: string
+          driver_number?: number | null
+          fastest_lap?: string | null
+          fastest_lap_rank?: number | null
+          grid?: number | null
           id?: string
+          laps?: number | null
           points?: number
-          position: number
-          race_id: number
+          position?: number | null
+          position_text: string
+          round: number
           session_type: string
+          status?: string | null
+          team_id: string
           team_name: string
+          time_text?: string | null
         }
         Update: {
-          created_at?: string
+          driver_code?: string | null
+          driver_id?: string
           driver_name?: string
+          driver_number?: number | null
+          fastest_lap?: string | null
+          fastest_lap_rank?: number | null
+          grid?: number | null
           id?: string
+          laps?: number | null
           points?: number
-          position?: number
-          race_id?: number
+          position?: number | null
+          position_text?: string
+          round?: number
           session_type?: string
+          status?: string | null
+          team_id?: string
           team_name?: string
+          time_text?: string | null
         }
         Relationships: []
       }
